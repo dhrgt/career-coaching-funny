@@ -1,12 +1,15 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, type ReactNode, type ButtonHTMLAttributes, type HTMLAttributes } from "react";
 import { motion } from "framer-motion";
 import goofyHero from "./IMG_2313.jpg"; // hero image
-import valeriaPhoto from "./vmartinez.jpeg"; // Valeria's photo
-import momPhoto from "./mom.png";           // Mom's photo
-import dadPhoto from "./dad.jpeg";          // Dad's photo
+import valeriaPhoto from "./vmartinez.jpeg";
+import momPhoto from "./mom.png";
+import dadPhoto from "./dad.jpeg";
 
-// --- Tiny utility components (pure Tailwind) ---
-const Button = ({ className = "", children, ...props }) => (
+// --- Typed utility components (pure Tailwind) ---
+type DivProps = HTMLAttributes<HTMLDivElement> & { className?: string; children?: ReactNode };
+
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { className?: string; children?: ReactNode };
+const Button: React.FC<ButtonProps> = ({ className = "", children, ...props }) => (
   <button
     className={`inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300 ${className}`}
     {...props}
@@ -15,23 +18,21 @@ const Button = ({ className = "", children, ...props }) => (
   </button>
 );
 
-const Card = ({ className = "", children, ...props }) => (
-  <div className={`rounded-2xl border border-slate-200 bg-white shadow ${className}`} {...props}>
-    {children}
-  </div>
+const Card: React.FC<DivProps> = ({ className = "", children, ...props }) => (
+  <div className={`rounded-2xl border border-slate-200 bg-white shadow ${className}`} {...props}>{children}</div>
 );
 
-const CardHeader = ({ children, className = "" }) => (
-  <div className={`border-b border-slate-100 px-5 py-4 ${className}`}>{children}</div>
+const CardHeader: React.FC<DivProps> = ({ children, className = "", ...props }) => (
+  <div className={`border-b border-slate-100 px-5 py-4 ${className}`} {...props}>{children}</div>
 );
-const CardTitle = ({ children, className = "" }) => (
-  <h3 className={`text-base font-semibold ${className}`}>{children}</h3>
+const CardTitle: React.FC<DivProps> = ({ children, className = "", ...props }) => (
+  <h3 className={`text-base font-semibold ${className}`} {...props}>{children}</h3>
 );
-const CardContent = ({ children, className = "" }) => (
-  <div className={`px-5 py-4 text-sm text-slate-700 ${className}`}>{children}</div>
+const CardContent: React.FC<DivProps> = ({ children, className = "", ...props }) => (
+  <div className={`px-5 py-4 text-sm text-slate-700 ${className}`} {...props}>{children}</div>
 );
 
-const Badge = ({ children, variant = "outline", className = "" }) => (
+const Badge: React.FC<{ variant?: "solid" | "outline"; className?: string; children?: ReactNode }> = ({ children, variant = "outline", className = "" }) => (
   <span
     className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs ${
       variant === "solid" ? "bg-slate-900 text-white" : "border border-slate-200 text-slate-700"
@@ -41,19 +42,13 @@ const Badge = ({ children, variant = "outline", className = "" }) => (
   </span>
 );
 
-const Switch = ({ checked, onChange }) => (
+const Switch: React.FC<{ checked: boolean; onChange: (value: boolean) => void }> = ({ checked, onChange }) => (
   <button
     type="button"
     onClick={() => onChange(!checked)}
-    className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
-      checked ? "bg-slate-900" : "bg-slate-300"
-    }`}
+    className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${checked ? "bg-slate-900" : "bg-slate-300"}`}
   >
-    <span
-      className={`inline-block h-5 w-5 transform rounded-full bg-white transition ${
-        checked ? "translate-x-6" : "translate-x-1"
-      }`}
-    />
+    <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition ${checked ? "translate-x-6" : "translate-x-1"}`} />
   </button>
 );
 
@@ -97,15 +92,13 @@ const roastLinesSerious = [
   "Align keywords to target job descriptions to pass ATS scans.",
 ];
 
-function randomPick(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+function randomPick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)]; }
 
 export default function App() {
-  const [funMode, setFunMode] = useState(true);
-  const [resumeText, setResumeText] = useState("");
-  const [roast, setRoast] = useState(null);
-  const [headline, setHeadline] = useState(null);
+  const [funMode, setFunMode] = useState<boolean>(true);
+  const [resumeText, setResumeText] = useState<string>("");
+  const [roast, setRoast] = useState<string | null>(null);
+  const [headline, setHeadline] = useState<string | null>(null);
 
   const headlinePool = useMemo(() => (funMode ? headlineIdeasFun : headlineIdeasSerious), [funMode]);
   const roastPool = useMemo(() => (funMode ? roastLinesFun : roastLinesSerious), [funMode]);
@@ -141,12 +134,7 @@ export default function App() {
 
       {/* Hero */}
       <section className="mx-auto max-w-4xl px-4 py-16 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex justify-center"
-        >
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="flex justify-center">
           <img
             src={goofyHero}
             alt="Dhruv looking extremely qualified (and not at all silly)"
@@ -159,12 +147,12 @@ export default function App() {
           transition={{ delay: 0.1, duration: 0.5 }}
           className="mt-8 text-4xl md:text-5xl font-extrabold leading-tight"
         >
-          World-Class Career Coaching. <span className="text-slate-500">3 Clients.</span> 100% Family Members.
+          World‑Class Career Coaching. <span className="text-slate-500">3 Clients.</span> 100% Family Members.
         </motion.h1>
         <p className="mt-4 text-slate-600 max-w-2xl mx-auto">
           {funMode
             ? "Need career advice? I’ve already transformed a Vice President, a teacher, and a software engineer. You’re next (maybe)."
-            : "Practical guidance on résumés, LinkedIn positioning, and interview prep — distilled from real coaching wins with a VP (operations), a K-12 educator, and a software engineer."}
+            : "Practical guidance on résumés, LinkedIn positioning, and interview prep — distilled from real coaching wins with a VP (operations), a K‑12 educator, and a software engineer."}
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <Button className="rounded-2xl">
@@ -174,7 +162,7 @@ export default function App() {
               <>Start Your Mini Makeover <span className="ml-1">›</span></>
             )}
           </Button>
-          <Badge>⭐ 5-star reviews (from relatives)</Badge>
+          <Badge>⭐ 5‑star reviews (from relatives)</Badge>
         </div>
         <div className="mt-3 text-xs text-slate-500">“Trust me, I know careers. I also know hats.”</div>
       </section>
@@ -193,12 +181,8 @@ export default function App() {
               <label className="block text-sm font-medium text-slate-700 mb-2">Paste a line (or three) from your résumé</label>
               <textarea
                 value={resumeText}
-                onChange={(e) => setResumeText(e.target.value)}
-                placeholder={
-                  funMode
-                    ? "e.g., Responsible for important stuff at big company"
-                    : "e.g., Led X initiative; seeking concise feedback"
-                }
+                onChange={(e) => setResumeText((e.target as HTMLTextAreaElement).value)}
+                placeholder={funMode ? "e.g., Responsible for important stuff at big company" : "e.g., Led X initiative; seeking concise feedback"}
                 className="w-full h-32 rounded-xl border p-3 outline-none focus:ring-2 focus:ring-slate-300 bg-white"
               />
               <div className="mt-3 flex items-center gap-2">
@@ -231,20 +215,20 @@ export default function App() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <span>✨</span> {funMode ? "LinkedIn Glow-Up" : "Headline Generator"}
+                <span>✨</span> {funMode ? "LinkedIn Glow‑Up" : "Headline Generator"}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-slate-600 mb-3">
                 {funMode
-                  ? "Press the button for an instant thought-leader headline. Warning: may cause unsolicited endorsements."
-                  : "Click to get a clean, role-aligned headline. Edit to fit your specialty."}
+                  ? "Press the button for an instant thought‑leader headline. Warning: may cause unsolicited endorsements."
+                  : "Click to get a clean, role‑aligned headline. Edit to fit your specialty."}
               </p>
               <div className="flex items-center gap-2">
                 <Button onClick={generateHeadline} className="rounded-2xl">
                   {funMode ? "Make Me a Thought Leader" : "Generate Professional Headline"}
                 </Button>
-                <Badge>1-click brag</Badge>
+                <Badge>1‑click brag</Badge>
               </div>
               {headline && (
                 <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mt-4">
@@ -271,7 +255,7 @@ export default function App() {
           <Card className="flex flex-col items-center p-4 text-center">
             <img src={momPhoto} alt="Mom" className="w-20 h-20 rounded-full object-cover border shadow-md mb-3" />
             <CardContent className="p-0 text-sm text-slate-700">
-              “He told me to stop using 12pt Times New Roman. Life-changing.”
+              “He told me to stop using 12pt Times New Roman. Life‑changing.”
               <div className="mt-1 text-xs text-slate-500">— Mom</div>
             </CardContent>
           </Card>
@@ -290,9 +274,7 @@ export default function App() {
           <Button className="rounded-2xl">
             {funMode ? "Book a Session (Payment in Tacos Accepted)" : "Book a Mini Review"}
           </Button>
-          <p className="mt-2 text-xs text-slate-500">
-            Toggle Fun/Serious above to switch copy. No gurus were harmed in the making of this site.
-          </p>
+          <p className="mt-2 text-xs text-slate-500">Toggle Fun/Serious above to switch copy. No gurus were harmed in the making of this site.</p>
         </div>
       </section>
 
