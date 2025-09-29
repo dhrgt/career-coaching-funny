@@ -147,7 +147,7 @@ export default function App() {
           transition={{ delay: 0.1, duration: 0.5 }}
           className="mt-8 text-4xl md:text-5xl font-extrabold leading-tight"
         >
-          World‑Class Career Coaching. <span className="text-slate-500">3 Clients.</span> 100% Family Members.
+          World‑Class Career Coaching. <span className="text-slate-500">3{"\u00A0"}Clients.</span> 100% Family Members.
         </motion.h1>
         <p className="mt-4 text-slate-600 max-w-2xl mx-auto">
           {funMode
